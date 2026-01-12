@@ -15,18 +15,12 @@ class EmailLog
     /**
      * Bandera para saber si el plugin está cargado.
      *
-     * @since 2.0
-     * @access private
-     *
      * @var bool
      */
     private $loaded = false;
 
     /**
      * Bandera para sobreescribir la API de plugins.
-     *
-     * @since 2.4.5
-     * @access private
      *
      * @var bool
      */
@@ -35,17 +29,12 @@ class EmailLog
     /**
      * Ruta del archivo del plugin.
      *
-     * @since 2.0
-     * @access private
-     *
      * @var string
      */
     private $plugin_file;
 
     /**
      * Ruta del directorio donde se almacenan las traducciones.
-     *
-     * @since 2.0
      *
      * @var string
      */
@@ -61,8 +50,6 @@ class EmailLog
     /**
      * Gestor de tablas de base de datos.
      *
-     * @since 2.0
-     *
      * @var \EmailLog\Core\DB\TableManager
      */
     public $table_manager;
@@ -74,6 +61,7 @@ class EmailLog
      */
     private $loadies = array();
     private $loadies_init = array();
+
     /**
      * Inicializa el plugin.
      *
@@ -83,8 +71,8 @@ class EmailLog
      */
     public function __construct($file, $loader, $table_manager)
     {
-        $this->plugin_file   = $file;
-        $this->loader        = $loader;
+        $this->plugin_file = $file;
+        $this->loader = $loader;
         $this->table_manager = $table_manager;
 
         $this->add_loadie($table_manager);
@@ -94,11 +82,9 @@ class EmailLog
 
     /**
      * Añade un componente (Loadie) de Email Log.
-     * El método `load()` del componente será llamado cuando Email Log se cargue.
      *
      * @param \EmailLog\Core\Loadie $loadie Componente a cargar.
-     *
-     * @return bool Falso si Email Log ya está cargado o si $loadie no es del tipo `Loadie`. Verdadero en caso contrario.
+     * @return bool
      */
     public function add_loadie($loadie, $loadie_init = false)
     {
@@ -106,7 +92,7 @@ class EmailLog
             return false;
         }
 
-        if (! $loadie instanceof Loadie) {
+        if (!$loadie instanceof Loadie) {
             return false;
         }
 
@@ -144,14 +130,7 @@ class EmailLog
 
         $options = get_option('email-log-core');
 
-        /**
-         * Email Log plugin loaded.
-         *
-         * @since 2.0
-         */
         do_action('el_loaded');
-
-        
     }
 
     function admin_enqueue_scripts()
@@ -587,7 +566,7 @@ class EmailLog
             'style' => true
         );
 
-        if(empty($html)){
+        if (empty($html)) {
             echo '';
         } else {
             echo wp_kses($html, $allowed_tags);

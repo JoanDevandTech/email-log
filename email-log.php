@@ -29,7 +29,7 @@
  * junto con este programa.
  */
 
-defined('ABSPATH') || exit; // Salir si se accede directamente.
+defined('ABSPATH') || exit;
 
 define('EMAIL_LOG_FILE', __FILE__);
 define('EMAIL_LOG_URL', trailingslashit(plugins_url('', __FILE__)));
@@ -53,13 +53,16 @@ function load_email_log($plugin_file)
     }
     $loader->add_file($plugin_dir . 'include/Util/helper.php');
     $loader->register();
+
     $email_log = new \EmailLog\Core\EmailLog($plugin_file, $loader, new \EmailLog\Core\DB\TableManager());
     $email_log->add_loadie(new \EmailLog\Core\EmailLogger());
     $email_log->add_loadie(new \EmailLog\Core\UI\UILoader(), true);
     $email_log->add_loadie(new \EmailLog\Core\Request\NonceChecker());
     $email_log->add_loadie(new \EmailLog\Core\Request\LogListAction());
+
     $capability_giver = new \EmailLog\Core\AdminCapabilityGiver();
     $email_log->add_loadie($capability_giver);
+
     register_activation_hook($plugin_file, array($email_log->table_manager, 'on_activate'));
     register_activation_hook($plugin_file, array($capability_giver, 'add_cap_to_admin'));
     add_action('plugins_loaded', array($email_log, 'load'), 101);
@@ -68,17 +71,11 @@ function load_email_log($plugin_file)
 function email_log_plugin_version()
 {
     $plugin_data = get_file_data(__FILE__, array('version' => 'Version'), 'plugin');
-
     return $plugin_data['version'];
-} // get_plugin_version
+}
 
 /**
- * Return the global instance of Email Log plugin.
- * Eventually the EmailLog class might become singleton.
- *
- * @since 2.0
- *
- * @global \EmailLog\Core\EmailLog $email_log
+ * Retorna la instancia global del plugin Email Log.
  *
  * @return \EmailLog\Core\EmailLog
  */

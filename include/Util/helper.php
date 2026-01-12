@@ -1,10 +1,10 @@
-<?php namespace EmailLog\Util;
+<?php
+namespace EmailLog\Util;
 
 /**
  * Email Log Helper functions.
- * Some of these functions would be used the addons.
  */
-defined( 'ABSPATH' ) || exit; // Salir si se accede directamente.
+defined('ABSPATH') || exit;
 
 /**
  * Perform additional sanitation of emails.
@@ -16,15 +16,16 @@ defined( 'ABSPATH' ) || exit; // Salir si se accede directamente.
  *
  * @return string Sanitized email.
  */
-function sanitize_email( $email, $multiple = true ) {
-	$emails = explode( ',', $email );
-	if ( ! $multiple ) {
-		$emails = array_slice( $emails, 0, 1 );
+function sanitize_email($email, $multiple = true)
+{
+	$emails = explode(',', $email);
+	if (!$multiple) {
+		$emails = array_slice($emails, 0, 1);
 	}
 
-	$cleaned_emails = array_map( __NAMESPACE__ . '\\sanitize_email_with_name', $emails );
+	$cleaned_emails = array_map(__NAMESPACE__ . '\\sanitize_email_with_name', $emails);
 
-	return implode( ', ', $cleaned_emails );
+	return implode(', ', $cleaned_emails);
 }
 
 /**
@@ -36,23 +37,24 @@ function sanitize_email( $email, $multiple = true ) {
  *
  * @return string Sanitized email.
  */
-function sanitize_email_with_name( $string ) {
-	$string = trim( $string );
+function sanitize_email_with_name($string)
+{
+	$string = trim($string);
 
-	$bracket_pos = strpos( $string, '<' );
-	if ( false !== $bracket_pos ) {
-		if ( $bracket_pos > 0 ) {
-			$name = substr( $string, 0, $bracket_pos );
-			$name = trim( $name );
+	$bracket_pos = strpos($string, '<');
+	if (false !== $bracket_pos) {
+		if ($bracket_pos > 0) {
+			$name = substr($string, 0, $bracket_pos);
+			$name = trim($name);
 
-			$email = substr( $string, $bracket_pos + 1 );
-			$email = str_replace( '>', '', $email );
+			$email = substr($string, $bracket_pos + 1);
+			$email = str_replace('>', '', $email);
 
-			return sanitize_text_field( $name ) . ' <' . \sanitize_email( $email ) . '>';
+			return sanitize_text_field($name) . ' <' . \sanitize_email($email) . '>';
 		}
 	}
 
-	return \sanitize_email( $string );
+	return \sanitize_email($string);
 }
 
 /**
@@ -64,9 +66,10 @@ function sanitize_email_with_name( $string ) {
  *
  * @return string[] List of Columns to export.
  */
-function get_log_columns_to_export() {
+function get_log_columns_to_export()
+{
 
-	if ( is_plugin_active( 'email-log-more-fields/email-log-more-fields.php' ) ) {
+	if (is_plugin_active('email-log-more-fields/email-log-more-fields.php')) {
 		return array(
 			'id',
 			'sent_date',
@@ -80,7 +83,7 @@ function get_log_columns_to_export() {
 		);
 	}
 
-	return array( 'id', 'sent_date', 'to_email', 'subject' );
+	return array('id', 'sent_date', 'to_email', 'subject');
 }
 
 /**
@@ -90,12 +93,13 @@ function get_log_columns_to_export() {
  *
  * @return bool True if admin non ajax request, False otherwise.
  */
-function is_admin_non_ajax_request() {
-	if ( function_exists( 'wp_doing_ajax' ) && wp_doing_ajax() ) {
+function is_admin_non_ajax_request()
+{
+	if (function_exists('wp_doing_ajax') && wp_doing_ajax()) {
 		return false;
 	}
 
-	if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+	if (defined('DOING_AJAX') && DOING_AJAX) {
 		return false;
 	}
 
@@ -112,12 +116,13 @@ function is_admin_non_ajax_request() {
  * @param array  $values  List of all possible values.
  * @param string $current The current value to be checked.
  */
-function checked_array( $values, $current ) {
-	if ( ! is_array( $values ) ) {
+function checked_array($values, $current)
+{
+	if (!is_array($values)) {
 		return;
 	}
 
-	if ( in_array( $current, $values, true ) ) {
+	if (in_array($current, $values, true)) {
 		echo "checked='checked'";
 	}
 }
@@ -129,7 +134,8 @@ function checked_array( $values, $current ) {
  *
  * @return string Failure icon markup.
  */
-function get_failure_icon() {
+function get_failure_icon()
+{
 	return '<span class="dashicons dashicons-dismiss"></span>';
 }
 
@@ -140,7 +146,8 @@ function get_failure_icon() {
  *
  * @return string Success icon markup.
  */
-function get_success_icon() {
+function get_success_icon()
+{
 	return '<span class="dashicons dashicons-yes-alt"></span>';
 
 }
@@ -159,12 +166,13 @@ function get_success_icon() {
  *
  * @return string Stringified value.
  */
-function stringify( $may_be_array, $delimiter = ',' ) {
-	if ( ! is_array( $may_be_array ) ) {
+function stringify($may_be_array, $delimiter = ',')
+{
+	if (!is_array($may_be_array)) {
 		return (string) $may_be_array;
 	}
 
-	return implode( $delimiter, $may_be_array );
+	return implode($delimiter, $may_be_array);
 }
 
 /**
@@ -176,8 +184,9 @@ function stringify( $may_be_array, $delimiter = ',' ) {
  *
  * @return string
  */
-function get_user_defined_date_time_format() {
-	return sprintf( '%1$s %2$s', get_option( 'date_format', 'Y-m-d' ), get_option( 'time_format', 'g:i a' ) );
+function get_user_defined_date_time_format()
+{
+	return sprintf('%1$s %2$s', get_option('date_format', 'Y-m-d'), get_option('time_format', 'g:i a'));
 }
 
 /**
@@ -187,12 +196,13 @@ function get_user_defined_date_time_format() {
  *
  * @return string Email log time display format.
  */
-function get_display_format_for_log_time() {
-	$default_time_format = get_option( 'time_format', 'g:i:s a' );
+function get_display_format_for_log_time()
+{
+	$default_time_format = get_option('time_format', 'g:i:s a');
 
-	if ( false === stripos( $default_time_format, 's' ) ) {
+	if (false === stripos($default_time_format, 's')) {
 		/* translators: Email Log time display format, see http://php.net/date */
-		$default_time_format = __( 'g:i:s a', 'email-log' );
+		$default_time_format = __('g:i:s a', 'email-log');
 	}
 
 	/**
@@ -202,7 +212,7 @@ function get_display_format_for_log_time() {
 	 *
 	 * @param string $default_time_format Default time format.
 	 */
-	return apply_filters( 'el_log_time_display_format', $default_time_format );
+	return apply_filters('el_log_time_display_format', $default_time_format);
 }
 
 /**
@@ -218,8 +228,9 @@ function get_display_format_for_log_time() {
  *
  * @return mixed|null
  */
-function el_array_get( $array, $key, $default = null ) {
-	return isset( $array[ $key ] ) ? $array[ $key ] : $default;
+function el_array_get($array, $key, $default = null)
+{
+	return isset($array[$key]) ? $array[$key] : $default;
 }
 
 /**
@@ -229,14 +240,15 @@ function el_array_get( $array, $key, $default = null ) {
  *
  * @return bool
  */
-function is_advanced_search_term( $term ) {
-	if ( ! is_string( $term ) ) {
+function is_advanced_search_term($term)
+{
+	if (!is_string($term)) {
 		return false;
 	}
 
-	$predicates = get_advanced_search_term_predicates( $term );
+	$predicates = get_advanced_search_term_predicates($term);
 
-	return ! empty( $predicates );
+	return !empty($predicates);
 }
 
 /**
@@ -258,18 +270,19 @@ function is_advanced_search_term( $term ) {
  *
  * @return array
  */
-function get_advanced_search_term_predicates( $term ) {
-	if ( ! is_string( $term ) ) {
+function get_advanced_search_term_predicates($term)
+{
+	if (!is_string($term)) {
 		return array();
 	}
 
-	$predicates           = explode( ' ', $term );
+	$predicates = explode(' ', $term);
 	$predicates_organized = array();
 
-	foreach ( $predicates as $predicate ) {
-		$is_match = preg_match( '/(id|email|to|cc|bcc|reply-to):(.*)$/', $predicate, $matches );
-		if ( 1 === $is_match ) {
-			$predicates_organized[ $matches[1] ] = $matches[2];
+	foreach ($predicates as $predicate) {
+		$is_match = preg_match('/(id|email|to|cc|bcc|reply-to):(.*)$/', $predicate, $matches);
+		if (1 === $is_match) {
+			$predicates_organized[$matches[1]] = $matches[2];
 		}
 	}
 
@@ -283,10 +296,11 @@ function get_advanced_search_term_predicates( $term ) {
  *
  * @return string
  */
-function get_advanced_search_url() {
-	$admin_url = get_admin_url( null, 'admin.php?page=email-log' );
+function get_advanced_search_url()
+{
+	$admin_url = get_admin_url(null, 'admin.php?page=email-log');
 
-	return add_query_arg( 'el_as', 1, $admin_url );
+	return add_query_arg('el_as', 1, $admin_url);
 }
 
 /**
@@ -301,8 +315,9 @@ function get_advanced_search_url() {
  *
  * @return string Column label.
  */
-function get_column_label_by_db_column( $db_column ) {
-	return get_column_label( $db_column );
+function get_column_label_by_db_column($db_column)
+{
+	return get_column_label($db_column);
 }
 
 /**
@@ -314,14 +329,15 @@ function get_column_label_by_db_column( $db_column ) {
  *
  * @return string Column label.
  */
-function get_column_label( $column_name ) {
+function get_column_label($column_name)
+{
 	$labels = get_column_label_map();
 
-	if ( ! array_key_exists( $column_name, $labels ) ) {
+	if (!array_key_exists($column_name, $labels)) {
 		return $column_name;
 	}
 
-	return $labels[ $column_name ];
+	return $labels[$column_name];
 }
 
 /**
@@ -334,19 +350,20 @@ function get_column_label( $column_name ) {
  *
  * @return array Key value pair of Email Log columns.
  */
-function get_column_label_map() {
+function get_column_label_map()
+{
 	$labels = array(
-		'id'          => __( 'ID', 'email-log' ),
-		'to_email'    => __( 'To', 'email-log' ),
-		'subject'     => __( 'Subject', 'email-log' ),
-		'message'     => __( 'Message', 'email-log' ),
-		'attachments' => __( 'Attachment', 'email-log' ),
-		'sent_date'   => __( 'Sent at', 'email-log' ),
-		'cc'          => __( 'CC', 'email-log' ),
-		'bcc'         => __( 'BCC', 'email-log' ),
-		'reply_to'    => __( 'Reply To', 'email-log' ),
-		'ip_address'  => __( 'IP Address', 'email-log' ),
-		'result'      => __( 'Sent Status', 'email-log' ),
+		'id' => __('ID', 'email-log'),
+		'to_email' => __('To', 'email-log'),
+		'subject' => __('Subject', 'email-log'),
+		'message' => __('Message', 'email-log'),
+		'attachments' => __('Attachment', 'email-log'),
+		'sent_date' => __('Sent at', 'email-log'),
+		'cc' => __('CC', 'email-log'),
+		'bcc' => __('BCC', 'email-log'),
+		'reply_to' => __('Reply To', 'email-log'),
+		'ip_address' => __('IP Address', 'email-log'),
+		'result' => __('Sent Status', 'email-log'),
 	);
 
 	/**
@@ -357,5 +374,5 @@ function get_column_label_map() {
 	 * @param array $labels List of DB Columns and its respective labels which are internationalized string.
 	 *                      Example: 'id' => __( 'ID', 'email-log' ),
 	 */
-	return apply_filters( 'el_db_column_labels', $labels );
+	return apply_filters('el_db_column_labels', $labels);
 }

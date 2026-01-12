@@ -1,436 +1,208 @@
 === Email Log ===
 Contributors: Joan Dev & Tech
-Tags: email, log, log email, resend email, email log
-Requires PHP: 5.6
+Tags: email, log, email tracking, debug email, audit emails, wordpress email
+Requires PHP: 7.3
 Requires at least: 4.0
 Tested up to: 6.8
-Stable tag: 2.62
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Log and view all outgoing emails from WordPress. Very useful if you have to debug email related problems or have to store sent emails for auditing.
+Log and view all outgoing emails from WordPress. Free plugin for debugging email issues and storing sent emails for auditing purposes.
 
 == Description ==
 
-<a href="https://wpemaillog.com/">Email Log</a> is a WordPress plugin that allows you to easily log and view all emails that were sent from WordPress.
+**Email Log** is a free WordPress plugin that allows you to easily log and view all emails sent from your WordPress site.
 
-This would be very useful for debugging email related problems in your WordPress site or for storing sent emails for auditing purposes, especially on ecommerce sites that are setup with either WooCommerce or Easy Digital Downloads.
+This plugin has been modified and maintained by **Joan Dev & Tech** based on an existing email logging solution. It's completely free and designed to help you debug email-related problems in your WordPress site or store sent emails for auditing purposes.
 
-You can perform advanced actions like re-sending email, automatically forwarding emails, export logs and automatically monitor email deliverability with the <a href="https://wpemaillog.com/">PRO version</a>.
+**Perfect for:**
+✅ Debugging email delivery issues
+✅ Auditing emails sent from your site
+✅ Monitoring WooCommerce or Easy Digital Downloads transactional emails
+✅ Tracking contact form submissions
+✅ Verifying that emails are being sent correctly
 
-Works with WordPress Multisite as well.
-### Viewing logged emails
+**Compatible with:**
+🔌 WordPress Multisite
+🔌 WooCommerce
+🔌 Easy Digital Downloads
+🔌 Contact Form 7
+🔌 Gravity Forms
+🔌 And any plugin that uses the standard WordPress `wp_mail()` function
 
-The logged emails will be stored in a separate table and can be viewed from the admin interface.
+### 🎯 Core Features (Free)
 
-While viewing the logs, the emails can be filtered or sorted based on the date, email, subject etc.
+📧 **Email Logging**
+All emails sent through WordPress are automatically logged to a separate database table, capturing:
+• Email recipient (To)
+• Subject line
+• Email content (HTML and plain text)
+• Date and time sent
+• IP address of the request that triggered the email
 
-### Deleting logged emails
+👀 **View Logged Emails**
+Access all logged emails from a clean admin interface where you can:
+• View email content in both HTML and plain text formats
+• Filter emails by date range
+• Search emails by recipient, subject, or content
+• Sort by any column (date, recipient, subject)
 
-In the admin interface, all the logged emails can be delete in bulk or can also be selectively deleted based on date, email and subject.
+🗑️ **Delete Logged Emails**
+Manage your email logs efficiently:
+• Delete emails individually
+• Bulk delete multiple emails at once
+• Filter and delete emails by date, recipient, or subject
 
-If you want to automatically delete the email logs after some days upgrade to the PRO version.
+⚙️ **Screen Options**
+Customize your viewing experience:
+• Choose which columns to display
+• Set the number of emails per page
+• Adjust the interface to your preferences
 
-### Resend email (PRO version)
+📊 **Dashboard Widget**
+Get a quick overview of your email logs:
+• See total number of logged emails
+• View recent email activity
+• Access logs directly from the dashboard
 
-Resend the email directly from the email log. You can modify the different fields of the email before resending it.
+### 🔒 Privacy & Security
 
-### More Fields (PRO version)
+🛡️ Only users with appropriate capabilities can view email logs
+🛡️ All data is stored securely in your WordPress database
+🛡️ Email content is properly escaped before display
+🛡️ Nonce verification for all actions
 
-Get access to additional fields in the email log page. The following are the additional fields that are added in the pro version.
+### 🚀 Future Development
 
-- From
-- CC
-- BCC
-- Reply To
-- Attachment
+This plugin is under active development. Future updates will include:
+🔜 Additional filtering options
+🔜 Enhanced search capabilities
+🔜 Performance optimizations
+🔜 UI/UX improvements
 
-### Forward email (PRO version)
+### 💬 Support & Documentation
 
-Pro version allows you to send a copy of all the emails send from WordPress to another email address.
-
-You can choose whether you want to forward through to, cc or bcc fields.
-
-This can be extremely useful when you want to debug by analyzing the emails that are sent from WordPress.
-
-### Export email logs (PRO version)
-
-Export the email logs as a CSV file for further processing or record keeping.
-
-
-### Documentation
-
-You can find fully searchable documentation in the [doc section of the Email Log](https://wpemaillog.com/docs/) website.
-
+For issues, questions, or feature requests, please visit:
+🌐 Plugin URI: https://joandev.com/email-log/
+🐙 GitHub: https://github.com/JoanDevandTech/email-log
+👨‍💻 Author: Joan Dev & Tech
+📍 Location: Galiza, Spain
 
 == Installation ==
 
-### Normal WordPress installations
+### ⚡ Automatic Installation (Recommended)
 
-Extract the zip file and just drop the contents in the wp-content/plugins/ directory of your WordPress installation and then activate the Plugin from Plugins page.
+1. Log in to your WordPress admin panel
+2. Navigate to Plugins → Add New
+3. Search for "Email Log"
+4. Click "Install Now" and then "Activate"
+
+### 📦 Manual Installation
+
+1. Download the plugin zip file
+2. Log in to your WordPress admin panel
+3. Navigate to Plugins → Add New → Upload Plugin
+4. Choose the downloaded zip file and click "Install Now"
+5. After installation, click "Activate Plugin"
+
+### 🔧 FTP Installation
+
+1. Download and extract the plugin zip file
+2. Upload the `email-log` folder to the `/wp-content/plugins/` directory via FTP
+3. Log in to your WordPress admin panel
+4. Navigate to Plugins and activate the "Email Log" plugin
+
+### ✨ After Activation
+
+Once activated, the plugin will automatically start logging all emails sent from WordPress. You can view the logs by navigating to **Tools → Email Log** in your WordPress admin panel.
 
 == Frequently Asked Questions ==
 
-### The content of the email is not getting logged when I am using wpmandrill plugin
+= Where can I view the logged emails? =
 
-wpmandrill plugin has a bug that prevents this plugin from logging the content of the email.
+After activating the plugin, go to **Tools → Email Log** in your WordPress admin panel. All logged emails will be displayed there.
 
-More details about the bug is available at https://wordpress.org/support/topic/mandrill-is-changing-the-names-of-args-in-the-filter?replies=1.
+= Does this plugin prevent emails from being sent? =
 
-I have asked the author of the plugin to fix it and it might get fixed it the next release.
+No, this plugin only logs emails. It does not interfere with the actual sending of emails. All emails are sent normally through WordPress.
 
-Meanwhile, I have added a hack to handle this condition in v1.7.3 of my plugin. So if the content is not getting logged, then upgrade to v1.7.3.
+= How much storage space will the email logs use? =
+
+The storage space depends on the volume of emails your site sends. Each email log entry stores the recipient, subject, content, and timestamp. You can delete old logs at any time to free up space.
+
+= Can I automatically delete old email logs? =
+
+Currently, you need to manually delete logs. Automatic deletion based on age is planned for a future update.
+
+= Does this work with WooCommerce emails? =
+
+Yes! This plugin works with any plugin that uses the standard WordPress `wp_mail()` function, including WooCommerce, Easy Digital Downloads, Contact Form 7, Gravity Forms, and more.
+
+= Does this work with WordPress Multisite? =
+
+Yes, the plugin is fully compatible with WordPress Multisite installations.
+
+= Can I export the email logs? =
+
+Export functionality is planned for a future update. Currently, you can view and delete logs from the admin interface.
+
+= Who can view the email logs? =
+
+By default, only administrators can view email logs. You can configure which user roles have access to email logs in the plugin settings.
+
+= Does this plugin work with SMTP plugins? =
+
+Yes, this plugin works alongside SMTP plugins. It logs emails before they are handed off to the SMTP service.
+
+= The email content is not being logged when using certain plugins =
+
+Some plugins may modify how emails are sent. If you experience issues with specific plugins, please report them so we can add compatibility fixes.
+
+= How do I uninstall the plugin? =
+
+Simply deactivate and delete the plugin from the Plugins page. You can configure whether to keep or delete the email logs table during uninstallation in the plugin settings.
 
 == Screenshots ==
 
-1. The above screenshot shows how the logged emails will be displayed by the Plugin
-
-2. This screenshot shows how you can configure the email display screen. You can choose the fields and the number of emails per page
-
-3. The above screenshot shows the HTML version (if available) of the logged email that you choose to view
-
-4. The above screenshot shows the text version of the logged email that you choose to view
-
-5. The above screenshot shows how you can search logged emails by date
-
+1. Email log list view showing all logged emails with filtering and search options
+2. Screen options panel to customize which columns are displayed
+3. HTML preview of a logged email
+4. Plain text preview of a logged email
+5. Date filter to search emails by date range
+6. Dashboard widget showing email log summary
 
 == Changelog ==
-= v2.62 – 2025-10-30 =
-- new prices for PRO version
-- minor fixes
-- furthure code cleanup
 
-= v2.61 – 2025-09-08 =
-- System info bug fix
+= v1.0.1 – 2025-01-12 =
+- Initial release by Joan Dev & Tech
+- Modified from existing email log plugin
+- Updated for WordPress 6.8 compatibility
+- Requires PHP 7.3 or higher
+- Code cleanup and modernization
+- Updated branding and documentation
+- Removed PRO version references (this is a free plugin)
+- Spanish translation improvements
 
-= v2.6 – 2025-09-03 =
-- code cleanup and fixes
-
-= v2.5 – 2025-09-03 =
-- Joan Dev & Tech se hizo cargo del desarrollo
-- ajustes menores de código
-
-= v2.4.9  =
-- Tweak: Explicitly check the action name and only allow actions based on an allow list.
-
-= v2.4.8 – (2021-11-06) =
-- Fix: Escape the search parameters before rendering them
-
-= v2.4.7 – (2021-10-13) =
-- Fix: Fix the typo that was introduced in v2.4.6
-
-= v2.4.6 – (2021-10-13) =
-- Fix: Enhance how order and order by works.
-- Tweak: Tested upto WordPress 5.8
-
-= v2.4.5 – (2021-04-13) =
-- Fix: Don't override WordPress plugin update in base plugin.
-
-= v2.4.4 – (2021-03-28) =
-- Tweak: Use the jQuery UI that is bundled with WordPress.
-- Tweak: Don't load add-on information from a local json file.
-
-= v2.4.3 – (2020-10-09) =
-- New: Added `el_log_time_display_format` filter to change the email log display time.
-- New: Provide an option for translators to override the email log display time.
-- Tweak: Enhanced the nonce check.
-
-= v2.4.2 – (2020-07-07) =
-- Fix: Fixed issues with email preview tab switcher that occurred in some installations.
-- Tweak: Enhanced the UI for lifetime license activation.
-
-= v2.4.1 – (2020-07-06) =
-- Fix: Added a missing file that broke v2.4.0 release for some installations.
-
-= v2.4.0 – (2020-07-05) =
-- New: Capture the error message when an email fails to be delivered.
-- New: Show seconds in send time.
-- Tweak: Enhance the email preview screen.
-- Tweak: Code enhancements for better maintenance.
-- Fix: Minor CSS alignment issues in addon list page.
-
-= v2.3.2 – (2020-03-03) =
-- New: Added the ability to log BuddyPress emails which don't use wp_mail function.
-- New: Supports PHP 5.6 to PHP 7.4
-- Tweak: Design tweaks for WordPress 5.3
-- Fix: Don't throw a warning if wrong data is passed to wp_mail function.
-- Fix: Bulk Actions that were performed from the bottom dropdown in the Log List page was not working.
-
-= v2.3.1 – (2019-04-11) =
-- Fix: Added a missing file that broke v2.3.1 release for some installations.
-
-= v2.3.0 - (2019-04-11) =
-
-- New: The 'To' and 'Subject' fields now supports text upto 500 characters.
-- New: Store the name of the attachment file if present.
-- New: Store ip address of the request that triggered the email.
-- New: Setting to enable notification when the number of email logs reach a threshold.
-- New: Dashboard Widget - Provide an option to hide Dashboard Widget from all users.
-- Tweak: Dashboard Widget - Add a thousand separator for logs count.
-- Tweak: Improve the preview of HTML emails.
-- Tweak: Enhanced the output of System Info page.
-- Fix: Deleting logs in bulk was not working.
-- Fix: Added compatibility with wp-ses plugin.
-- Fix: Added the ability to deactivate expired license.
-
-= v2.2.5 - (2018-02-22) =
-- Tweak: Show Dashboard Widget only if the user can view email logs.
-
-= v2.2.4 - (2017-11-23) =
-- Tweak: Tweaks to how the license is handled.
-
-= v2.2.3 - (2017-11-09) =
-- Fix: Escaped all the fields while displaying email details in popup.
-
-= v2.2.2 - (2017-11-07) =
-- Tweak: Improved the way nonce checks are performed.
-- Fix: Escaped the email content before showing it in preview.
-
-= v2.2.1 - (2017-11-04) =
-- Tweak: Improved the UX of the view email content screen.
-
-= v2.2.0 - (2017-10-09) =
-- New: Dashboard Widget that display summary about email logs.
-- Tweak: Performance improvements in add-on license code.
-
-= v2.1.0 - (2017-09-21) =
-- New: GUI option to choose the user roles that can access email logs.
-- New: GUI option to delete email log table when the plugin is uninstalled.
-- Tweak: Performance improvements.
-- Tweak: Delete all traces of the plugin from DB if the user chooses to destroy data during uninstall.
-- Fix: Handle cases where there is a quote in front of email address.
-- Fix: Handle cases where array passed to `wp_mail` may not contain all the required fields.
-
-= v2.0.2 - (2017-08-07) =
-- Fix: Renamed include/util directory to correct case. This caused issues in some install.
-
-= v2.0.1 - (2017-08-04) =
-- Fix: Fixed a JavaScript issue in view logs page.
-- Fix: Fixed a CSS issue in view logs page.
-- Fix: Fixed a race condition between plugin and add-ons.
-
-= v2.0.0 - (2017-08-04) =
-- New: Ability to filter logs by date.
-- New: Ability to filter logs by name.
-- New: Complete rewrite for better performance.
-- Docs: Dropped support for PHP 5.2
-
-= v1.9.1 - (2016-07-02) - (Dev time: 0.5 hour) =
-- Fix: Only allow users with `manage_option` capability to view email content.
-
-= v1.9 - (2016-06-19) - (Dev time: 6 hours) =
-- Fix: Improve the performance of count query (issue #33)
-- Docs: Added access modifiers to class methods
-- Docs: Removed unused array_get() method
-- Docs: Inline documentation added
-- Tests: Added Unit tests
-
-= v1.8.2 (2016-04-20) - (Dev time: 1 hour) =
-- Tweak: Log all emails from the TO field. Earlier the plugin was logging only the first email
-- Fix: Fixed issues in parsing reply-to and content-type headers
-
-= v1.8.1 (2015-12-27) - (Dev time: 0.5 hour) =
-- Fix: Fixed the "Delete All Logs" issue that was introduced in v1.8
-
-= v1.8 (2015-12-26) - (Dev time: 5 hours) =
-- New: Added filters and actions for addons
-- New: Added Resend Email Addon
-- Tweak: Optimize for large number of logs
-- Tweak: Use charset and collate that is defined in wp-config.php file
-- Tweak: Format email content
-- Tweak: Remove PHP4 compatible code
-- Fix: Sanitize the delete email log url
-
-= v1.7.5  (2014-09-23) - (Dev time: 1 hour) =
-- Tweak: Remove PHP 4.0 compatibility code
-- Tweak: Tweak the install code (issue #26)
-- Fix: Include JavaScript only when needed
-- Fix: Fix a bug in the save user options function (issue #27)
-
-= v1.7.4  (2014-07-24) - (Dev time: 0.5 hours) =
-- Fix: Handle cases where `date_format` or `time_format` are empty (issue #23)
-- Tweak: Remove excessive comments from include/class-email-log-list-table.php (issue #10)
-
-= v1.7.3  (2014-05-14) - (Dev time: 0.5 hours) =
-- Fix: Fixed a compatibility issue with wpmandrill plugin (issue #20)
-
-= v1.7.2  (2014-04-16) - (Dev time: 0.5 hours) =
-- Fix: Fix issue in register_activation_hook
-
-= v1.7.1  (2014-04-02) - (Dev time: 0.5 hours) =
-- Fix: Fix the issue that was preventing the tables to be created
-
-= v1.7  (2014-03-29) - (Dev time: 2.5 hours) =
-- Fix: Fix whitespace
-- New: Add support for WordPress Multisite (issue #18)
-- New: Add ability to delete all logs at once (issue #19)
-
-= v1.6.2  (2014-01-27) - (Dev time: 0.5 hours) =
-- Fix: Fix unexpected output while activating the plugin
-
-= v1.6.1  (2013-12-17) - (Dev time: 0.5 hours) =
-- Fix: Change `prepare_items` function so that it adheres to strict mode
-- Fix: Remove `screen_icon` function call which is not used in WordPress 3.8
-- New: Compatible with WordPress 3.8
-
-= v1.6  (2013-12-08) - (Dev time: 0.5 hours) =
-- New: Add a link to view the content of the email in the log screen
-
-= v1.5.4  (2013-09-21) - (Dev time: 0.5 hours) =
-- Fix issue in searching non-english characters
-- Add addon screenshots
-
-= v1.5.3 (2013-09-14) - (Dev time: 0.5 hours) =
-- Fix issue in bulk deleting logs
-
-= v1.5.2 (2013-09-13) - (Dev time: 0.5 hours) =
-- Add the ability to override the fields displayed in the log page
-- Add support for "More Fields" addon
-
-= v1.5.1 (2013-09-09) - (Dev time: 0.5 hours) =
-- Correct the upgrade file include path. Issue #7
-- Fix undfined notice error. Issue #8
-- Update screenshots. Issue #6
-
-= v1.5 (2013-09-09) - (Dev time: 10 hours) =
-- Rewrote Admin interface using native tables
-
-= v1.1 (2013-04-27) - (Dev time: 0.5 hour)  =
-- Added more documentation
-
-= v1.0 (2013-04-17) - (Dev time: 0.5 hour)  =
-- Added support for buying pro addons
-
-= v0.9.3 (2013-04-01) - (Dev time: 0.5 hour)  =
-- Moved table name into a separate constants file
-
-= v0.9.2 (2013-03-14) - (Dev time: 0.5 hour)  =
-- Added support for filters which can be used while logging emails
-
-= v0.9.1 (2013-01-08) - (Dev time: 0.5 hour)  =
-- Moved the menu under tools (Thanks samuelaguilera)
-
-= v0.9(2013-01-08) - (Dev time: 1 hour)  =
-- Use blog date/time for send date instead of server time
-- Handle cases where the headers send is an array
-
-= v0.8.1 (2012-07-23) (Dev time: 0.5 hour) =
-- Reworded most error messages and fixed lot of typos
-
-= v0.8 (2012-07-12) (Dev time: 1 hour) =
-- Fixed undefined notices - https://wordpress.org/support/topic/plugin-email-log-notices-undefined-indices
-- Added Dutch translations
-
-= v0.7 (2012-06-23) (Dev time: 1 hour) =
-- Changed Timestamp(n) MySQL datatype to Timestamp (now compatible with MySQL 5.5+)
-- Added the ability to bulk delete checkboxes
-
-= v0.6 (2012-04-29) (Dev time: 2 hours) =
-- Added option to delete individual email logs
-- Moved pages per screen option to Screen options panel
-- Added information to the screen help tab
-- Added Lithuanian translations
-
-= v0.5 (2012-01-01) =
-- Fixed a deprecation notice
-
-= v0.4 (2010-01-02) =
-- Added German translation (Thanks Frank)
-
-= v0.3 (2009-10-19) =
-- Added compatibility for MySQL 4 (Thanks Frank)
-
-= v0.2 (2009-10-15) =
-- Added compatibility for MySQL 4
-
-= v0.1 (2009-10-08) =
-- Initial Release
+= v1.0.0 – 2025-01-10 =
+- Forked from original Email Log plugin
+- Initial modifications by Joan Dev & Tech
 
 == Upgrade Notice ==
 
-= 2.4.6 =
-Tested upto WordPress 5.8
+= 1.0.1 =
+Initial release of the modified free version by Joan Dev & Tech. Fully compatible with WordPress 6.8 and PHP 7.3+.
 
-= 2.4.5 =
-Improved admin performance and reduced network calls.
+== Credits ==
 
-= 2.4.1 =
-Starting v2.4.0 the plugin now captures the error message when an email fails to be delivered.
+This plugin is based on the original Email Log plugin and has been modified and maintained by Joan Dev & Tech (Galiza, Spain).
 
-= 2.4.0 =
-Starting v2.4.0 the plugin now captures the error message when an email fails to be delivered.
+Original plugin concept and architecture by Sudar Muthu.
 
-= 2.3.0 =
-The 'To' and 'Subject' fields now supports text upto 500 characters.
+== License ==
 
-= 2.2.5 =
-Hide Dashboard Widget for users who can't view email logs.
+This plugin is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or any later version.
 
-= 2.2.3 =
-Improved the security of the plugin by escaping all the fields before displaying them.
+This plugin is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-= 2.2.2 =
-Improved the way nonce checks are done. No visible changes from functionality perspective.
-
-= 2.2.1 =
-Improved the UX of the view email content screen.
-
-= 2.2.0 =
-Added a Dashboard Widget that display summary information about email logs.
-
-= 2.1.0 =
-GUI option to choose who can access email logs and performance improvements.
-
-= 2.0.2 =
-Fixed the case of the Util directory. This caused issues in some install.
-
-= 2.0.1 =
-Fixed a JavaScript issue that was introduced in v2.0.0
-
-= 2.0.0 =
-Ability to search logs by date. Dropped support to PHP 5.2
-
-= 1.9.1 =
-- Fixed a minor security issue that allowed unprevilleged users to view content of logged emails
-
-= 1.9 =
-- Fixed issues with pagination.
-
-= 1.8.2 =
-Added the ability to log all emails in the TO field instead of just the first one
-
-= 1.8.1 =
-Fixed issue with "Delete All Logs" action that was introduced in v1.8
-
-= 1.8 =
-Added support for resending emails through addon
-
-= 1.7.5 =
-Fix a bug in the save user options function
-
-= 1.7.4 =
-Handle cases where `date_format` or `time_format` are empty
-
-= 1.7.2 =
-Fix the bug that was introduced in v1.7
-
-= 1.7.1 =
-Fix the bug that was introduced in v1.7
-
-= 1.6 =
-Ability to view content of the email
-
-= 1.5.4 =
-Fixed issue in searching for non-english characters
-
-= 1.5.3 =
-Fix issue in bulk deleting logs
-
-= 1.5 =
-Rewrote Admin interface using native tables
-
-= 1.0 =
-Added support for buying pro addons
-
-= 0.9.2 =
-Added filters for more customizing
+You should have received a copy of the GNU General Public License along with this plugin. If not, see https://www.gnu.org/licenses/gpl-2.0.html.

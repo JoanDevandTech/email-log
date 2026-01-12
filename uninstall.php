@@ -1,11 +1,8 @@
 <?php
 /**
  * Uninstall page for Email Log Plugin to clean up all plugin data.
- *
- * This file is named uninstall.php since WordPress requires that name.
  */
 
-// exit if WordPress is not uninstalling the plugin.
 if (!defined('ABSPATH') && !defined('WP_UNINSTALL_PLUGIN')) {
 	exit();
 }
@@ -23,11 +20,7 @@ if (is_multisite()) {
 }
 
 /**
- * Delete all email log data from db.
- *
- * The data include email log table, options, capability and add-on license data.
- *
- * @since 1.7
+ * Elimina todos los datos del plugin de la base de datos.
  *
  * @global object $wpdb
  */
@@ -42,7 +35,6 @@ function email_log_delete_db_data()
 		is_array($option) && array_key_exists('remove_on_uninstall', $option) &&
 		'true' === strtolower($option['remove_on_uninstall'])
 	) {
-
 		$remove_data_on_uninstall = true;
 	}
 
