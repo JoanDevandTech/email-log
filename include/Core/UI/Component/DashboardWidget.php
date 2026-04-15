@@ -35,33 +35,35 @@ class DashboardWidget implements Loadie {
 	 * Imprime el contenido en el widget del escritorio.
 	 */
 	public function render() {
-		$email_log  = email_log();
-		$logs_count = $email_log->table_manager->get_logs_count();
+		$email_log = email_log();
+		$stats     = $email_log->table_manager->get_log_stats();
 		?>
 
-		<p>
-			<?php esc_html_e( 'Total number of emails logged' , 'email-log' ); ?>: <strong><?php echo number_format( absint( $logs_count ), 0, ',', ',' ); ?></strong>
-		</p>
+		<div class="el-dashboard-stats" style="display: flex; gap: 15px; margin-bottom: 15px;">
+			<div style="flex: 1; text-align: center; padding: 10px; background: #f0f0f1; border-radius: 4px;">
+				<div style="font-size: 24px; font-weight: bold;"><?php echo esc_html( number_format( $stats['total'] ) ); ?></div>
+				<div style="color: #646970;"><?php esc_html_e( 'Total', 'email-log' ); ?></div>
+			</div>
+			<div style="flex: 1; text-align: center; padding: 10px; background: #f0f0f1; border-radius: 4px;">
+				<div style="font-size: 24px; font-weight: bold;"><?php echo esc_html( number_format( $stats['today'] ) ); ?></div>
+				<div style="color: #646970;"><?php esc_html_e( 'Today', 'email-log' ); ?></div>
+			</div>
+			<div style="flex: 1; text-align: center; padding: 10px; background: #e6ffe6; border-radius: 4px;">
+				<div style="font-size: 24px; font-weight: bold; color: #00a32a;"><?php echo esc_html( number_format( $stats['success'] ) ); ?></div>
+				<div style="color: #646970;"><?php esc_html_e( 'OK', 'email-log' ); ?></div>
+			</div>
+			<div style="flex: 1; text-align: center; padding: 10px; background: #ffe6e6; border-radius: 4px;">
+				<div style="font-size: 24px; font-weight: bold; color: #d63638;"><?php echo esc_html( number_format( $stats['failed'] ) ); ?></div>
+				<div style="color: #646970;"><?php esc_html_e( 'Failed', 'email-log' ); ?></div>
+			</div>
+		</div>
 
-		<?php
-			/**
-			 * Triggered just after printing the content of the dashboard widget.
-			 * Use this hook to add custom messages to the dashboard widget.
-			 *
-			 * @since 2.4.0
-			 */
-			do_action( 'el_inside_dashboard_widget' );
-		?>
+		<?php do_action( 'el_inside_dashboard_widget' ); ?>
 
 		<ul class="subsubsub" style="float: none">
-			<li><?php
-            /* translators: %s email logs page link */
-            \EmailLog\Core\EmailLog::wp_kses_wf(sprintf(__( '<a href="%s">View Logs</a>', 'email-log' ), 'admin.php?page=email-log' )); ?> <span style="color: #ddd"> | </span></li>
-			<li><?php
-            /* translators: %s settings page link */
-            \EmailLog\Core\EmailLog::wp_kses_wf(sprintf(__( '<a href="%s">Settings</a>', 'email-log' ), 'admin.php?page=email-log-settings' )); ?> <span style="color: #ddd"> | </span></li>
+			<li><a href="<?php echo esc_url( admin_url( 'admin.php?page=email-log' ) ); ?>"><?php esc_html_e( 'View Logs', 'email-log' ); ?></a> <span style="color: #ddd"> | </span></li>
+			<li><a href="<?php echo esc_url( admin_url( 'admin.php?page=email-log-settings' ) ); ?>"><?php esc_html_e( 'Settings', 'email-log' ); ?></a></li>
 		</ul>
-
 		<?php
 	}
 }
