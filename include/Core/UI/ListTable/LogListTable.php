@@ -57,14 +57,18 @@ class LogListTable extends \WP_List_Table {
 	 */
 	protected function extra_tablenav( $which ) {
 		if ( 'top' === $which ) {
-			/**
-			 * Triggered before the logs list table is displayed.
-			 *
-			 * @since 2.2.5
-			 * @since 2.4.0 Added $total_logs parameter
-			 *
-			 * @param int $total_logs Total number of logs.
-			 */
+			$current_status = isset( $_GET['result'] ) ? sanitize_text_field( $_GET['result'] ) : '';
+			?>
+			<div class="alignleft actions">
+				<select name="result" id="filter-by-result">
+					<option value=""><?php esc_html_e( 'All statuses', 'email-log' ); ?></option>
+					<option value="1" <?php selected( $current_status, '1' ); ?>><?php esc_html_e( 'Successful', 'email-log' ); ?></option>
+					<option value="0" <?php selected( $current_status, '0' ); ?>><?php esc_html_e( 'Failed', 'email-log' ); ?></option>
+				</select>
+				<?php submit_button( __( 'Filter', 'email-log' ), '', 'filter_action', false ); ?>
+			</div>
+			<?php
+
 			do_action( 'el_before_logs_list_table', $this->get_pagination_arg( 'total_items' ) );
 		}
 	}
@@ -187,6 +191,22 @@ class LogListTable extends \WP_List_Table {
 		$actions['delete'] = sprintf( '<a href="%s">%s</a>',
 			esc_url( $delete_url ),
 			__( 'Delete', 'email-log' )
+		);
+
+		$resend_url = add_query_arg(
+			array(
+				'action' => 'el-log-list-resend-email',
+				'log_id' => $item->id,
+				'nonce'  => wp_create_nonce( 'el-resend-email' ),
+			),
+			'admin-ajax.php'
+		);
+
+		$actions['resend'] = sprintf(
+			'<a href="%s" class="el-resend-email" data-id="%d">%s</a>',
+			esc_url( $resend_url ),
+			$item->id,
+			__( 'Resend', 'email-log' )
 		);
 
 		/**
@@ -348,25 +368,22 @@ class LogListTable extends \WP_List_Table {
 	 * @param string $input_id ID attribute value for the search input field.
 	 */
 	public function search_box( $text, $input_id ) {
-        //phpcs:ignore nonce not needed as can be linked to directly
-
 		$input_text_id  = $input_id . '-search-input';
-		$input_date_id  = $input_id . '-search-date-input';
-		$input_date_val = ( ! empty( $_REQUEST['d'] ) ) ? sanitize_text_field( wp_unslash($_REQUEST['d']) ) : ''; //phpcs:ignore
+		$input_date_from_id = $input_id . '-search-date-from';
+		$input_date_to_id   = $input_id . '-search-date-to';
+		$input_date_from_val = ( ! empty( $_REQUEST['d'] ) ) ? sanitize_text_field( wp_unslash( $_REQUEST['d'] ) ) : '';
+		$input_date_to_val   = ( ! empty( $_REQUEST['d_to'] ) ) ? sanitize_text_field( wp_unslash( $_REQUEST['d_to'] ) ) : '';
 
-		if ( ! empty( $_REQUEST['orderby'] ) ) //phpcs:ignore
-			echo '<input type="hidden" name="orderby" value="' . esc_attr( $_REQUEST['orderby'] ) . '" />'; //phpcs:ignore
-		if ( ! empty( $_REQUEST['order'] ) ) //phpcs:ignore
-			echo '<input type="hidden" name="order" value="' . esc_attr( $_REQUEST['order'] ) . '" />'; //phpcs:ignore
-		if ( ! empty( $_REQUEST['post_mime_type'] ) ) //phpcs:ignore
-			echo '<input type="hidden" name="post_mime_type" value="' . esc_attr( $_REQUEST['post_mime_type'] ) . '" />'; //phpcs:ignore
-		if ( ! empty( $_REQUEST['detached'] ) ) //phpcs:ignore
-			echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />'; //phpcs:ignore
+		if ( ! empty( $_REQUEST['orderby'] ) )
+			echo '<input type="hidden" name="orderby" value="' . esc_attr( sanitize_text_field( $_REQUEST['orderby'] ) ) . '" />';
+		if ( ! empty( $_REQUEST['order'] ) )
+			echo '<input type="hidden" name="order" value="' . esc_attr( sanitize_text_field( $_REQUEST['order'] ) ) . '" />';
 		?>
 		<p class="search-box">
-			<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_html($text); ?>:</label>
-			<input type="search" id="<?php echo esc_attr( $input_date_id ); ?>" name="d" value="<?php echo esc_attr( $input_date_val ); ?>" placeholder="<?php esc_html_e( 'Filter by date', 'email-log' ); ?>" />
-			<input type="search" id="<?php echo esc_attr( $input_text_id ); ?>" name="s" value="<?php _admin_search_query(); ?>" placeholder="<?php esc_html_e( 'Search by term', 'email-log' ); ?>" />
+			<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_html( $text ); ?>:</label>
+			<input type="search" id="<?php echo esc_attr( $input_date_from_id ); ?>" name="d" value="<?php echo esc_attr( $input_date_from_val ); ?>" placeholder="<?php esc_html_e( 'Date from', 'email-log' ); ?>" class="el-datepicker" />
+			<input type="search" id="<?php echo esc_attr( $input_date_to_id ); ?>" name="d_to" value="<?php echo esc_attr( $input_date_to_val ); ?>" placeholder="<?php esc_html_e( 'Date to', 'email-log' ); ?>" class="el-datepicker" />
+			<input type="search" id="<?php echo esc_attr( $input_text_id ); ?>" name="s" value="<?php echo esc_attr( isset( $_REQUEST['s'] ) ? sanitize_text_field( $_REQUEST['s'] ) : '' ); ?>" placeholder="<?php esc_html_e( 'Search by term', 'email-log' ); ?>" />
 			<?php submit_button( $text, '', '', false, array( 'id' => 'search-submit' ) ); ?>
 		</p>
 		<?php

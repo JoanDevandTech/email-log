@@ -278,14 +278,24 @@ class TableManager implements Loadie {
 			}
 		}
 
-		if ( isset( $request['d'] ) && $request['d'] !== '' ) {
-			$search_date = sanitize_text_field( trim( $request['d'] ) );
-			if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $search_date ) ) {
-				if ( '' === $query_cond ) {
-					$query_cond .= $wpdb->prepare( " WHERE sent_date BETWEEN %s AND %s ", $search_date . ' 00:00:00', $search_date . ' 23:59:59' );
-				} else {
-					$query_cond .= $wpdb->prepare( " AND sent_date BETWEEN %s AND %s ", $search_date . ' 00:00:00', $search_date . ' 23:59:59' );
-				}
+		$date_from = isset( $request['d'] ) && $request['d'] !== '' ? sanitize_text_field( trim( $request['d'] ) ) : '';
+		$date_to   = isset( $request['d_to'] ) && $request['d_to'] !== '' ? sanitize_text_field( trim( $request['d_to'] ) ) : '';
+
+		if ( $date_from !== '' && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_from ) ) {
+			$date_end = $date_to !== '' && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_to ) ? $date_to : $date_from;
+			if ( '' === $query_cond ) {
+				$query_cond .= $wpdb->prepare( " WHERE sent_date BETWEEN %s AND %s ", $date_from . ' 00:00:00', $date_end . ' 23:59:59' );
+			} else {
+				$query_cond .= $wpdb->prepare( " AND sent_date BETWEEN %s AND %s ", $date_from . ' 00:00:00', $date_end . ' 23:59:59' );
+			}
+		}
+
+		if ( isset( $request['result'] ) && $request['result'] !== '' ) {
+			$result_value = absint( $request['result'] );
+			if ( '' === $query_cond ) {
+				$query_cond .= $wpdb->prepare( ' WHERE result = %d', $result_value );
+			} else {
+				$query_cond .= $wpdb->prepare( ' AND result = %d', $result_value );
 			}
 		}
 
@@ -359,6 +369,31 @@ class TableManager implements Loadie {
 		global $wpdb;
 
 		return $wpdb->get_var( 'SELECT count(*) FROM ' . $this->get_log_table_name() ); //phpcs:ignore
+	}
+
+	/**
+	 * Get email log statistics.
+	 *
+	 * @return array Stats array with total, success, failed, today counts.
+	 */
+	public function get_log_stats() {
+		global $wpdb;
+		$table = $this->get_log_table_name();
+
+		$total   = absint( $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" ) );
+		$success = absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE result = %d", 1 ) ) );
+		$failed  = absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE result = %d", 0 ) ) );
+		$today   = absint( $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$table} WHERE sent_date >= %s",
+			current_time( 'Y-m-d' ) . ' 00:00:00'
+		) ) );
+
+		return array(
+			'total'   => $total,
+			'success' => $success,
+			'failed'  => $failed,
+			'today'   => $today,
+		);
 	}
 
 	/**

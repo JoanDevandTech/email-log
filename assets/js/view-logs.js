@@ -1,6 +1,6 @@
 ( function( $ ) {
 	$( document ).ready( function() {
-		$( '#search_id-search-date-input' ).datepicker({
+		$( '.el-datepicker' ).datepicker({
 			changeMonth: true,
 			changeYear: true,
 			dateFormat: 'yy-mm-dd'
@@ -16,6 +16,23 @@
 			position: { my: 'center top', at: 'center bottom+10', collision: 'flipfit' },
 			hide: { duration: 100 },
 			show: { duration: 100 }
+		});
+
+		$( document ).on( 'click', '.el-resend-email', function( event ) {
+			event.preventDefault();
+			var $link = $( this );
+			if ( ! confirm( 'Resend this email?' ) ) {
+				return;
+			}
+			$.get( $link.attr( 'href' ), function( response ) {
+				if ( response.success ) {
+					alert( response.data );
+				} else {
+					alert( 'Error: ' + response.data );
+				}
+			}).fail( function() {
+				alert( 'Request failed.' );
+			});
 		});
 
 		// Initialize tabs inside thickbox when they appear.
