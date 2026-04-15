@@ -164,6 +164,7 @@ class LogListTable extends \WP_List_Table {
 			array(
 				'action' => 'el-log-list-view-message',
 				'log_id' => $item->id,
+				'nonce'  => wp_create_nonce( 'el-view-log-message' ),
 				'width'  => '800',
 				'height' => '550',
 			),

@@ -36,8 +36,9 @@ class LogListAction implements Loadie {
 			wp_die();
 		}
 
-			// nonce no necesario; puede llamarse directamente
-		$id = absint( $_GET['log_id'] ); //phpcs:ignore
+			check_ajax_referer( 'el-view-log-message', 'nonce' );
+
+		$id = absint( $_GET['log_id'] );
 
 		if ( $id <= 0 ) {
 			wp_die();
