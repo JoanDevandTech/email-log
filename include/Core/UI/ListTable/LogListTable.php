@@ -41,8 +41,6 @@ class LogListTable extends \WP_List_Table {
 
 		parent::__construct( $args );
 
-		add_action( 'admin_body_class', array( $this, 'add_body_class' ) );
-
 		add_action( 'el_display_log_columns', array( $this, 'display_column_data_in_log_list_table' ), 10, 2 );
 		add_action( 'el_view_log_after_headers', array( $this, 'add_headers_in_view_log_modal' ) );
 
@@ -58,7 +56,7 @@ class LogListTable extends \WP_List_Table {
 	 * @param string $which Add the markup after (bottom) or before (top) the list.
 	 */
 	protected function extra_tablenav( $which ) {
-		if ( 'top' == $which ) {
+		if ( 'top' === $which ) {
 			/**
 			 * Triggered before the logs list table is displayed.
 			 *
@@ -470,16 +468,4 @@ class LogListTable extends \WP_List_Table {
 		}
 	}
 
-	/**
-	 * Adds the Class to the <body> tag in the Admin end.
-	 *
-	 * @since 2.1.0
-	 *
-	 * @param string $classes Body classes.
-	 *
-	 * @return string Modified body classes.
-	 */
-	public function add_body_class( $classes ) {
-		return $classes;
-	}
 }

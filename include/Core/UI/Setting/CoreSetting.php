@@ -54,33 +54,6 @@ class CoreSetting extends Setting {
 		add_action( 'el_trigger_notify_email_when_log_threshold_met', array( $this, 'trigger_threshold_met_notification_email' ) );
 	}
 
-    /**
-	 * Renderiza el título de la sección de borrado automático
-	 *
-	 * @param array $args
-	 */
-	public function render_delete_log_settings() {
-        echo '';
-    }
-
-    /**
-	 * Renderiza el título de la sección de reenvío de correos
-	 *
-	 * @param array $args
-	 */
-	public function render_forward_email_settings() {
-        echo '';
-    }
-
-    /**
-	 * Renderiza el título de la sección de monitor de correos
-	 *
-	 * @param array $args
-	 */
-	public function render_email_monitor_title_settings() {
-        echo '';
-    }
-
 	/**
 	 * Renderiza el ajuste `Roles de usuario permitidos`.
 	 *

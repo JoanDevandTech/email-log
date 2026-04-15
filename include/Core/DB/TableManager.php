@@ -23,7 +23,7 @@ class TableManager implements Loadie {
 	const DB_OPTION_NAME = 'email-log-db';
 
 	/* Versión de la base de datos */
-	const DB_VERSION = '0.3';
+	const DB_VERSION = '0.4';
 
 	/**
 	 * Configura los hooks.
@@ -504,7 +504,9 @@ class TableManager implements Loadie {
 				ip_address VARCHAR(15),
 				result TINYINT(1),
 				error_message VARCHAR(1000),
-				PRIMARY KEY  (id)
+				PRIMARY KEY  (id),
+				KEY idx_sent_date (sent_date),
+				KEY idx_result (result)
 			) ' . $charset_collate . ';';
 
 		return $sql;

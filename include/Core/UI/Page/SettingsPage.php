@@ -118,9 +118,6 @@ class SettingsPage extends BasePage {
                     ?>
                 </form>
             </div>
-            <div class="email-log-sidebar-wrapper">
-                <?php \EmailLog\Core\EmailLog::wp_kses_wf($this->sidebar()); ?>
-            </div>
 
 		</div>
 		<?php

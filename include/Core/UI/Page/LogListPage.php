@@ -111,9 +111,6 @@ class LogListPage extends BasePage {
                     ?>
                 </form>
             </div>
-            <div class="email-log-sidebar-wrapper">
-                <?php \EmailLog\Core\EmailLog::wp_kses_wf($this->sidebar()); ?>
-            </div>
 		</div>
 		<?php
 		$this->render_page_footer();
@@ -188,7 +185,7 @@ class LogListPage extends BasePage {
 	 * @return bool|int
 	 */
 	public function save_screen_options( $status, $option, $value ) {
-		if ( 'per_page' == $option ) {
+		if ( 'per_page' === $option ) {
 			return $value;
 		} else {
 			return $status;
@@ -203,22 +200,14 @@ class LogListPage extends BasePage {
 	 * @param string $hook The current admin page.
 	 */
 	public function load_view_logs_assets( $hook ) {
-		// No cargar recursos si no es la página de Ver registros.
-		if ( 'toplevel_page_email-log' !== $hook && 'email-log_page_email-log-settings' !== $hook) {
+		if ( 'toplevel_page_email-log' !== $hook && 'email-log_page_email-log-settings' !== $hook ) {
 			return;
 		}
 
-		$email_log      = email_log();
+		$email_log = email_log();
+		$version   = $email_log->get_version();
 
-		wp_register_script('insertionQ', EMAIL_LOG_URL . 'assets/js/insQ.min.js', array( 'jquery' ), '1.0.4', true );
-		wp_enqueue_script('jquery-ui-position');
-    wp_enqueue_script('jquery-effects-core');
-    wp_enqueue_script("jquery-effects-blind");
-    wp_enqueue_script('jquery-ui-accordion');
-    wp_enqueue_script('jquery-ui-dialog');
-    wp_enqueue_script( 'el-view-logs', EMAIL_LOG_URL . 'assets/js/view-logs.js', array( 'insertionQ', 'jquery-ui-core', 'jquery-ui-datepicker', 'jquery-ui-tooltip', 'jquery-ui-tabs' ), $email_log->get_version(), true );
-    wp_enqueue_style('el-jquery-ui-css', EMAIL_LOG_URL . 'assets/css/email-log-jquery-ui.min.css', array());
-    wp_enqueue_style('wp-jquery-ui-dialog');
-
+		wp_enqueue_script( 'el-view-logs', EMAIL_LOG_URL . 'assets/js/view-logs.js', array( 'jquery-ui-core', 'jquery-ui-datepicker', 'jquery-ui-tooltip', 'jquery-ui-tabs' ), $version, true );
+		wp_enqueue_style( 'el-jquery-ui-css', EMAIL_LOG_URL . 'assets/css/email-log-jquery-ui.min.css', array() );
 	}
 }

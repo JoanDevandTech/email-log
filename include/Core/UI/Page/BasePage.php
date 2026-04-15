@@ -66,7 +66,4 @@ abstract class BasePage implements Loadie {
 		return $this->screen;
 	}
 
-    function sidebar(){
-        return '';
-    }
 }
