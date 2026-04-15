@@ -19,6 +19,7 @@ class LogListAction implements Loadie {
 	 */
 	public function load() {
 		add_action( 'wp_ajax_el-log-list-view-message', array( $this, 'view_log_message' ) );
+		add_action( 'wp_ajax_el-log-list-resend-email', array( $this, 'resend_email' ) );
 
 		add_action( 'el-log-list-delete', array( $this, 'delete_logs' ) );
 		add_action( 'el-log-list-delete-all', array( $this, 'delete_all_logs' ) );
@@ -113,6 +114,45 @@ class LogListAction implements Loadie {
 		}
 
 		wp_die(); // this is required to return a proper result.
+	}
+
+	public function resend_email() {
+		if ( ! current_user_can( LogListPage::CAPABILITY ) ) {
+			wp_send_json_error( __( 'Insufficient permissions.', 'email-log' ) );
+		}
+
+		check_ajax_referer( 'el-resend-email', 'nonce' );
+
+		$id = absint( $_GET['log_id'] );
+		if ( $id <= 0 ) {
+			wp_send_json_error( __( 'Invalid log ID.', 'email-log' ) );
+		}
+
+		$log_items = $this->get_table_manager()->fetch_log_items_by_id( array( $id ) );
+		if ( empty( $log_items ) ) {
+			wp_send_json_error( __( 'Log not found.', 'email-log' ) );
+		}
+
+		$log_item = $log_items[0];
+
+		$headers = array();
+		if ( ! empty( $log_item['headers'] ) ) {
+			$parser       = new \EmailLog\Util\EmailHeaderParser();
+			$parsed       = $parser->parse_headers( $log_item['headers'] );
+			$headers_text = $parser->join_headers( $parsed );
+			if ( ! empty( $headers_text ) ) {
+				$headers = explode( "\r\n", trim( $headers_text ) );
+				$headers = array_filter( $headers );
+			}
+		}
+
+		$sent = wp_mail( $log_item['to_email'], $log_item['subject'], $log_item['message'], $headers );
+
+		if ( $sent ) {
+			wp_send_json_success( __( 'Email resent successfully.', 'email-log' ) );
+		} else {
+			wp_send_json_error( __( 'Failed to resend email.', 'email-log' ) );
+		}
 	}
 
 	/**
