@@ -3,7 +3,7 @@
  * Uninstall page for Email Log Plugin to clean up all plugin data.
  */
 
-if (!defined('ABSPATH') && !defined('WP_UNINSTALL_PLUGIN')) {
+if ( ! defined( 'ABSPATH' ) || ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit();
 }
 

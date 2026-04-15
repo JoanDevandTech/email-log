@@ -59,8 +59,8 @@ class NonceChecker implements Loadie {
 				return;
 			}
 
-			if ( ! wp_verify_nonce( sanitize_text_field(wp_unslash($_POST[ $action . '_nonce' ] ?? '')), $action ) ) {
-				return;
+			if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $action . '_nonce' ] ?? '' ) ), $action ) ) {
+				wp_die( __( 'Security check failed.', 'email-log' ), 403 );
 			}
 		}
 
@@ -85,8 +85,8 @@ class NonceChecker implements Loadie {
 					return;
 				}
 
-				if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash($_REQUEST[ LogListPage::LOG_LIST_ACTION_NONCE_FIELD ] ?? '')), LogListPage::LOG_LIST_ACTION_NONCE ) ) {
-					return;
+				if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST[ LogListPage::LOG_LIST_ACTION_NONCE_FIELD ] ?? '' ) ), LogListPage::LOG_LIST_ACTION_NONCE ) ) {
+					wp_die( __( 'Security check failed.', 'email-log' ), 403 );
 				}
 			}
 
@@ -95,8 +95,8 @@ class NonceChecker implements Loadie {
 					return;
 				}
 
-				if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash($_REQUEST[ $action . '-nonce-field' ] ?? '' )), $action . '-nonce' ) ) {
-					return;
+				if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST[ $action . '-nonce-field' ] ?? '' ) ), $action . '-nonce' ) ) {
+					wp_die( __( 'Security check failed.', 'email-log' ), 403 );
 				}
 			}
 		}
