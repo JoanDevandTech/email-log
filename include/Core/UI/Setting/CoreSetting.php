@@ -21,6 +21,7 @@ class CoreSetting extends Setting {
 			'remove_on_uninstall'   => __( 'Remove Data on Uninstall?', 'email-log' ),
 			'hide_dashboard_widget' => __( 'Disable Dashboard Widget', 'email-log' ),
 			'db_size_notification'  => __( 'Database Size Notification', 'email-log' ),
+			'auto_delete_days'      => __( 'Auto Delete Logs', 'email-log' ),
 		);
 
 		$this->section->default_value = array(
@@ -34,6 +35,7 @@ class CoreSetting extends Setting {
 				'log_threshold_met'         => false,
 				'threshold_email_last_sent' => false,
 			),
+			'auto_delete_days'      => 0,
 		);
 
 		$this->load();
@@ -591,6 +593,25 @@ class CoreSetting extends Setting {
         <br>
         <em> <?php esc_html_e( 'You can enter multiple email address by separating them with comma.', 'email-log' ); ?> </em>
 		<?php
+	}
+
+	public function render_auto_delete_days_settings( $args ) {
+		$option = $this->get_value();
+		$days   = isset( $option[ $args['id'] ] ) ? absint( $option[ $args['id'] ] ) : 0;
+
+		$field_name = $this->section->option_name . '[' . $args['id'] . ']';
+		?>
+		<p><?php esc_html_e( 'Automatically delete email logs older than the specified number of days. Set to 0 to disable.', 'email-log' ); ?></p>
+		<label>
+			<input name="<?php echo esc_attr( $field_name ); ?>" size="10" type="number" min="0" max="9999" value="<?php echo esc_attr( $days ); ?>">
+			<?php esc_html_e( 'days', 'email-log' ); ?>
+		</label>
+		<p><em><?php esc_html_e( 'Runs once daily via WP Cron. Set to 0 to disable.', 'email-log' ); ?></em></p>
+		<?php
+	}
+
+	public function sanitize_auto_delete_days( $value ) {
+		return absint( $value );
 	}
 
 	public function sanitize( $values ) {
