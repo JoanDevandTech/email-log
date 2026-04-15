@@ -88,14 +88,8 @@ class EmailLogger implements Loadie {
 			$log['attachment_name'] = '';
 		}
 
-		// IP Address detection.
-		$ip = '';
-		if ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-			$parts = explode( ',', $_SERVER['HTTP_X_FORWARDED_FOR'] );
-			$ip    = trim( $parts[0] );
-		} elseif ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
-			$ip = $_SERVER['REMOTE_ADDR'];
-		}
+		// IP Address detection - only trust REMOTE_ADDR to prevent spoofing.
+		$ip = ! empty( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : '';
 		$log['ip_address'] = sanitize_text_field( $ip );
 
 		/**
