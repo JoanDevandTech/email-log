@@ -4,7 +4,7 @@
  * Plugin URI: https://joandev.com/email-log
  * Description: Registra cada correo enviado desde WordPress
  * Author: Joan Dev & Tech
- * Version: 1.0.1
+ * Version: 2.0.0
  * Author URI: https://joandev.com
  * Text Domain: email-log-joan-dev
  * License: GPLv2 or later

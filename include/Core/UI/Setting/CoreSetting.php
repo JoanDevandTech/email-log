@@ -493,108 +493,6 @@ class CoreSetting extends Setting {
 		<?php
 	}
 
-    public function render_interval_settings( $args ) {
-		$option = $this->get_value();
-		?>
-        <p><?php esc_html_e( 'Auto Delete Logs allows you to automatically delete logs that are older than specified interval (in days).', 'email-log' ); ?></p>
-		<p><?php esc_html_e( 'Specify the interval beyond which the logs are to be auto deleted.', 'email-log' ); ?></p>
-        <label>
-            <input class="open-pro-dialog" name="<?php echo esc_attr( $this->section->option_name . '[' . $args['id'] . ']' ); ?>"
-                   size="40"
-                   type="text" value="365" disabled>
-        </label>
-        <br>
-        <em> <?php esc_html_e( 'Specify the interval in days.', 'email-log' ); ?> </em>
-		<?php
-			/**
-			 * After the Next Run setting is rendered in the Auto Delete Logs add-on.
-			 *
-			 * @since 1.1.1
-			 */
-			do_action( 'el_auto_delete_logs_after_next_run_setting' );
-		?>
-
-		<?php
-	}
-
-    public function render_monitor_emails_settings( $args ) {
-		$options = get_option( 'email-log-core' );
-        ?>
-        <p><?php esc_html_e( 'This service checks that your WordPress site is able to send emails reliably. Once enabled, the plugin will automatically send a daily "heartbeat" email to our monitoring server. If no heartbeat is received within 24 hours, an alert will be sent to the email address you provide below. This way you\'ll know right away if your site\'s emails stop working (for example, due to SMTP misconfiguration or server issues). You can also use the "Test email delivery" button at any time to confirm that emails are being delivered correctly.', 'email-log' ); ?></p>
-        <br />
-		<label>
-            <input data-feature="test-email" type="checkbox" class="open-upsell" name="<?php echo esc_attr( $this->section->option_name . '[' . $args['id'] . '][notify]' ); ?>" value="true" <?php
-		checked( true, false ); ?> /> Notify
-
-            <input name="<?php echo esc_attr( $this->section->option_name . '[' . $args['id'] . '][alerts_email]' ); ?>"
-                   size="40"
-                   type="email" class="open-upsell" data-feature="test-email" value="<?php echo esc_html(get_option('admin_email')); ?>" disabled>
-        </label>
-        <a class="button button-primary open-upsell" data-feature="test-email">Test email delivery now</a>
-        <br>
-
-        <p><em> <?php esc_html_e( 'Enter the email where you want to receive an alert if the monitor does not receive emails from your website.', 'email-log' ); ?> </em></p>
-		<?php
-	}
-
-	public function sanitize_interval( $value ) {
-		$value = absint( $value );
-
-		return 0 !== $value ? $value : 365;
-	}
-
-    /**
-	 * Render To field.
-	 *
-	 * @since  2.0.2
-	 *
-	 * @param array $args Args.
-	 */
-	public function render_to_settings( $args ) {
-		$this->render_email_field( $args );
-	}
-
-	/**
-	 * Render CC field.
-	 *
-	 * @since  2.0.2
-	 *
-	 * @param array $args Args.
-	 */
-	public function render_cc_settings( $args ) {
-		$this->render_email_field( $args );
-	}
-
-	/**
-	 * Render BCC field.
-	 *
-	 * @since  2.0.2
-	 *
-	 * @param array $args Args.
-	 */
-	public function render_bcc_settings( $args ) {
-		$this->render_email_field( $args );
-	}
-
-	/**
-	 * Render email field.
-	 *
-	 * @since 2.0.2 Protected method.
-	 *
-	 * @param array $args Args.
-	 */
-	protected function render_email_field( $args ) {
-		$option = $this->get_value();
-		?>
-        <label>
-            <input  class="open-pro-dialog" name="<?php echo esc_attr( $this->section->option_name . '[' . $args['id'] . ']' ); ?>" size="40"
-                   type="text" value="" disabled>
-        </label>
-        <br>
-        <em> <?php esc_html_e( 'You can enter multiple email address by separating them with comma.', 'email-log' ); ?> </em>
-		<?php
-	}
-
 	public function render_auto_delete_days_settings( $args ) {
 		$option = $this->get_value();
 		$days   = isset( $option[ $args['id'] ] ) ? absint( $option[ $args['id'] ] ) : 0;
@@ -612,20 +510,6 @@ class CoreSetting extends Setting {
 
 	public function sanitize_auto_delete_days( $value ) {
 		return absint( $value );
-	}
-
-	public function sanitize( $values ) {
-		if ( ! is_array( $values ) ) {
-			return array();
-		}
-
-		foreach ( $values as $key => $value ) {
-            if(in_array($key, array('to', 'cc', 'bcc'))){
-			    $values[ $key ] = \EmailLog\Util\sanitize_email( $value );
-            }
-		}
-
-		return $values;
 	}
 
 }
