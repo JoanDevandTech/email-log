@@ -99,6 +99,20 @@ class LogListPage extends BasePage {
 		<div class="wrap">
 			<h2><img class="el-logo" src="<?php echo esc_url(EMAIL_LOG_URL . 'assets/img/logo-64x64.png'); ?>" /><?php esc_html_e( 'Email Log', 'email-log' ); ?></h2>
 			<?php settings_errors(); ?>
+			<?php
+			$export_url = add_query_arg( array(
+				'page'          => self::PAGE_SLUG,
+				'el_export_csv' => '1',
+				'_wpnonce'      => wp_create_nonce( 'el-export-csv' ),
+				's'             => isset( $_GET['s'] ) ? sanitize_text_field( $_GET['s'] ) : '',
+				'd'             => isset( $_GET['d'] ) ? sanitize_text_field( $_GET['d'] ) : '',
+				'd_to'          => isset( $_GET['d_to'] ) ? sanitize_text_field( $_GET['d_to'] ) : '',
+				'result'        => isset( $_GET['result'] ) ? sanitize_text_field( $_GET['result'] ) : '',
+			), admin_url( 'admin.php' ) );
+			?>
+			<a href="<?php echo esc_url( $export_url ); ?>" class="button" style="margin-bottom: 10px;">
+				<?php esc_html_e( 'Export CSV', 'email-log' ); ?>
+			</a>
             <div class="email-log-body-wrapper">
                 <form id="email-logs-list" method="get">
                     <input type="hidden" name="page" value="<?php echo esc_attr( self::PAGE_SLUG ); ?>">

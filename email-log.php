@@ -59,6 +59,8 @@ function load_email_log($plugin_file)
     $email_log->add_loadie(new \EmailLog\Core\UI\UILoader(), true);
     $email_log->add_loadie(new \EmailLog\Core\Request\NonceChecker());
     $email_log->add_loadie(new \EmailLog\Core\Request\LogListAction());
+	$email_log->add_loadie( new \EmailLog\Core\Request\ExportAction() );
+	$email_log->add_loadie( new \EmailLog\Core\CronManager() );
 
     $capability_giver = new \EmailLog\Core\AdminCapabilityGiver();
     $email_log->add_loadie($capability_giver);
