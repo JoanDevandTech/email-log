@@ -119,10 +119,20 @@ class TableManager implements Loadie {
 
 		$table_name = $this->get_log_table_name();
 
-		// Can't use wpdb->prepare for the below query. If used it results in this bug // https://github.com/sudar/email-log/issues/13.
-		$ids = esc_sql( $ids );
+		if ( empty( $ids ) ) {
+			return 0;
+		}
 
-		return $wpdb->query( "DELETE FROM {$table_name} where id IN ( {$ids} )" ); //phpcs:ignore
+		$ids_array = array_map( 'absint', explode( ',', $ids ) );
+		$ids_array = array_filter( $ids_array );
+
+		if ( empty( $ids_array ) ) {
+			return 0;
+		}
+
+		$placeholders = implode( ',', array_fill( 0, count( $ids_array ), '%d' ) );
+
+		return $wpdb->query( $wpdb->prepare( "DELETE FROM {$table_name} WHERE id IN ( {$placeholders} )", $ids_array ) ); //phpcs:ignore WordPress.DB.PreparedSQLPlaceholders
 	}
 
 	/**
@@ -215,81 +225,67 @@ class TableManager implements Loadie {
 		$query_cond  = '';
 
 		if ( isset( $request['s'] ) && is_string( $request['s'] ) && $request['s'] !== '' ) {
-			$search_term = trim( esc_sql( $request['s'] ) );
+			$search_term = trim( sanitize_text_field( wp_unslash( $request['s'] ) ) );
 
 			if ( Util\is_advanced_search_term( $search_term ) ) {
 				$predicates = Util\get_advanced_search_term_predicates( $search_term );
 
-				foreach ( $predicates as $column => $email ) {
+				foreach ( $predicates as $column => $term_value ) {
+					$like_value = '%' . $wpdb->esc_like( $term_value ) . '%';
+
 					switch ( $column ) {
 						case 'id':
 							$query_cond .= empty( $query_cond ) ? ' WHERE ' : ' AND ';
-							$query_cond .= "id = '$email'";
+							$query_cond .= $wpdb->prepare( 'id = %d', absint( $term_value ) );
 							break;
 						case 'to':
 							$query_cond .= empty( $query_cond ) ? ' WHERE ' : ' AND ';
-							$query_cond .= "to_email LIKE '%$email%'";
+							$query_cond .= $wpdb->prepare( 'to_email LIKE %s', $like_value );
 							break;
 						case 'email':
 							$query_cond .= empty( $query_cond ) ? ' WHERE ' : ' AND ';
-							$query_cond .= ' ( '; /* Begin 1st */
-							$query_cond .= " ( to_email LIKE '%$email%' OR subject LIKE '%$email%' ) "; /* Begin 2nd & End 2nd */
-							$query_cond .= ' OR ';
-							$query_cond .= ' ( '; /* Begin 3rd */
-							$query_cond .= "headers <> ''";
-							$query_cond .= ' AND ';
-							$query_cond .= ' ( '; /* Begin 4th */
-							$query_cond .= "headers REGEXP '[F|f]rom:.*$email' OR ";
-							$query_cond .= "headers REGEXP '[CC|Cc|cc]:.*$email' OR ";
-							$query_cond .= "headers REGEXP '[BCC|Bcc|bcc]:.*$email' OR ";
-							$query_cond .= "headers REGEXP '[R|r]eply-[T|t]o:.*$email'";
-							$query_cond .= ' ) '; /* End 4th */
-							$query_cond .= ' ) '; /* End 3rd */
-							$query_cond .= ' ) '; /* End 1st */
+							$query_cond .= $wpdb->prepare(
+								'( to_email LIKE %s OR subject LIKE %s OR ( headers <> %s AND ( headers LIKE %s ) ) )',
+								$like_value, $like_value, '', $like_value
+							);
 							break;
 						case 'cc':
 							$query_cond .= empty( $query_cond ) ? ' WHERE ' : ' AND ';
-							$query_cond .= ' ( '; /* Begin 1st */
-							$query_cond .= "headers <> ''";
-							$query_cond .= ' AND ';
-							$query_cond .= ' ( '; /* Begin 2nd */
-							$query_cond .= "headers REGEXP '[CC|Cc|cc]:.*$email' ";
-							$query_cond .= ' ) '; /* End 2nd */
-							$query_cond .= ' ) '; /* End 1st */
+							$query_cond .= $wpdb->prepare(
+								'( headers <> %s AND headers LIKE %s )',
+								'', '%CC:%' . $wpdb->esc_like( $term_value ) . '%'
+							);
 							break;
 						case 'bcc':
 							$query_cond .= empty( $query_cond ) ? ' WHERE ' : ' AND ';
-							$query_cond .= ' ( '; /* Begin 1st */
-							$query_cond .= "headers <> ''";
-							$query_cond .= ' AND ';
-							$query_cond .= ' ( '; /* Begin 2nd */
-							$query_cond .= "headers REGEXP '[BCC|Bcc|bcc]:.*$email' ";
-							$query_cond .= ' ) '; /* End 2nd */
-							$query_cond .= ' ) '; /* End 1st */
+							$query_cond .= $wpdb->prepare(
+								'( headers <> %s AND headers LIKE %s )',
+								'', '%BCC:%' . $wpdb->esc_like( $term_value ) . '%'
+							);
 							break;
 						case 'reply-to':
 							$query_cond .= empty( $query_cond ) ? ' WHERE ' : ' AND ';
-							$query_cond .= ' ( '; /* Begin 1st */
-							$query_cond .= "headers <> ''";
-							$query_cond .= ' AND ';
-							$query_cond .= ' ( '; /* Begin 2nd */
-							$query_cond .= "headers REGEXP '[R|r]eply-to:.*$email' ";
-							$query_cond .= ' ) '; /* End 2nd */
-							$query_cond .= ' ) '; /* End 1st */
+							$query_cond .= $wpdb->prepare(
+								'( headers <> %s AND headers LIKE %s )',
+								'', '%Reply-to:%' . $wpdb->esc_like( $term_value ) . '%'
+							);
 							break;
 					}
 				}
 			} else {
-				$query_cond .= " WHERE ( to_email LIKE '%$search_term%' OR subject LIKE '%$search_term%' ) ";
+				$like_value = '%' . $wpdb->esc_like( $search_term ) . '%';
+				$query_cond .= $wpdb->prepare( ' WHERE ( to_email LIKE %s OR subject LIKE %s ) ', $like_value, $like_value );
 			}
 		}
 
 		if ( isset( $request['d'] ) && $request['d'] !== '' ) {
-			$search_date = trim( esc_sql( $request['d'] ) );
-			if ( '' === $query_cond ) {
-				$query_cond .= " WHERE sent_date BETWEEN '$search_date 00:00:00' AND '$search_date 23:59:59' ";
-			} else {
-				$query_cond .= " AND sent_date BETWEEN '$search_date 00:00:00' AND '$search_date 23:59:59' ";
+			$search_date = sanitize_text_field( trim( $request['d'] ) );
+			if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $search_date ) ) {
+				if ( '' === $query_cond ) {
+					$query_cond .= $wpdb->prepare( " WHERE sent_date BETWEEN %s AND %s ", $search_date . ' 00:00:00', $search_date . ' 23:59:59' );
+				} else {
+					$query_cond .= $wpdb->prepare( " AND sent_date BETWEEN %s AND %s ", $search_date . ' 00:00:00', $search_date . ' 23:59:59' );
+				}
 			}
 		}
 
